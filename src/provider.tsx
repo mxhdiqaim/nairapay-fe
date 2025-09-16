@@ -25,10 +25,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
                 <OpenfortProvider
-                    // Set the publishable key of your Openfort account. This field is required.
                     publishableKey={"YOUR_PUBLISHABLE_KEY"}
-
-                    // Set the wallet configuration.
                     walletConfig={{
                         shieldPublishableKey: "YOUR_SHIELD_PUBLISHABLE_KEY",
                         // If you want to use AUTOMATIC embedded wallet recovery, an encryption session is required.
