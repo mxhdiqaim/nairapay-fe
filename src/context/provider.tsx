@@ -2,7 +2,7 @@ import {type ReactNode} from "react";
 import {
     // AuthProvider,
     OpenfortProvider,
-    getDefaultConfig,
+    getDefaultConfig, AuthProvider,
     // RecoveryMethod,
 } from "@openfort/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -18,9 +18,16 @@ const config = createConfig(
     })
 );
 
+const authProviders = [
+    AuthProvider.GUEST,
+    AuthProvider.EMAIL,
+    AuthProvider.GOOGLE,
+    AuthProvider.WALLET,
+]
+
 const queryClient = new QueryClient();
 
-export const Providers = ({ children }: { children: ReactNode }) => {
+export const Provider = ({ children }: { children: ReactNode }) => {
     return (
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
@@ -32,6 +39,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
                         // http://localhost:5173/docs/products/embedded-wallet/react/wallet/create#automatic-recovery.
                         createEncryptedSessionEndpoint: "YOUR_BACKEND_ENDPOINT",
                     }}
+                    uiConfig={{ authProviders }}
                 >
                     {children}
                 </OpenfortProvider>
