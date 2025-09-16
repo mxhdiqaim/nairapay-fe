@@ -27,7 +27,7 @@ const authProviders = [
 
 const queryClient = new QueryClient();
 
-export const Provider = ({ children }: { children: ReactNode }) => {
+const Provider = ({ children }: { children: ReactNode }) => {
     return (
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
@@ -47,3 +47,5 @@ export const Provider = ({ children }: { children: ReactNode }) => {
         </WagmiProvider>
     );
 }
+
+export default Provider;
