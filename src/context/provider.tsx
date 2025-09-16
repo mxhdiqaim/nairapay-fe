@@ -25,6 +25,10 @@ const authProviders = [
     AuthProvider.WALLET,
 ]
 
+const publishableKey = import.meta.env.VITE_OPENFORT_PUBLISHABLE_KEY;
+const shieldPublishableKey = import.meta.env.VITE_OPENFORT_SHIELD_PUBLISHABLE_KEY;
+const backendUrl = import.meta.env.VITE_OPENFORT_BACKEND_ENDPOINT;
+
 const queryClient = new QueryClient();
 
 const Provider = ({ children }: { children: ReactNode }) => {
@@ -32,12 +36,12 @@ const Provider = ({ children }: { children: ReactNode }) => {
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
                 <OpenfortProvider
-                    publishableKey={"YOUR_PUBLISHABLE_KEY"}
+                    publishableKey={publishableKey}
                     walletConfig={{
-                        shieldPublishableKey: "YOUR_SHIELD_PUBLISHABLE_KEY",
+                        shieldPublishableKey: shieldPublishableKey,
                         // If you want to use AUTOMATIC embedded wallet recovery, an encryption session is required.
                         // http://localhost:5173/docs/products/embedded-wallet/react/wallet/create#automatic-recovery.
-                        createEncryptedSessionEndpoint: "YOUR_BACKEND_ENDPOINT",
+                        createEncryptedSessionEndpoint: backendUrl,
                     }}
                     uiConfig={{ authProviders }}
                 >
