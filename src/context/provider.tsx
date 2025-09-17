@@ -4,6 +4,7 @@ import {
     OpenfortProvider,
     getDefaultConfig,
     AuthProvider,
+    RecoveryMethod,
     // RecoveryMethod,
 } from "@openfort/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -34,12 +35,19 @@ const Provider = ({ children }: { children: ReactNode }) => {
                 <OpenfortProvider
                     publishableKey={publishableKey}
                     walletConfig={{
-                        shieldPublishableKey: shieldPublishableKey,
+                        shieldPublishableKey,
                         // If you want to use AUTOMATIC embedded wallet recovery, an encryption session is required.
                         // http://localhost:5173/docs/products/embedded-wallet/react/wallet/create#automatic-recovery.
                         // createEncryptedSessionEndpoint: backendUrl,
                     }}
-                    uiConfig={{ authProviders }}
+                    uiConfig={{
+                        authProviders,
+                        theme: "midnight",
+                        walletRecovery: {
+                            defaultMethod: RecoveryMethod.PASSKEY,
+                            allowedMethods: [RecoveryMethod.PASSWORD, RecoveryMethod.AUTOMATIC, RecoveryMethod.PASSKEY],
+                        },
+                    }}
                 >
                     {children}
                 </OpenfortProvider>

@@ -1,13 +1,13 @@
 import Provider from "./context/provider.tsx";
-import { OpenfortButton } from "@openfort/react";
+import MainComponent from "./component/main-component.tsx";
+// import { OpenfortButton } from "@openfort/react";
 
 import "./App.css";
 
 function App() {
     return (
         <Provider>
-            <div
-                className={"main"}
+            <main
                 style={{
                     padding: 20,
                     display: "flex",
@@ -17,8 +17,9 @@ function App() {
                     width: "100vw",
                 }}
             >
-                <OpenfortButton showAvatar={true} showBalance={true} label={"Login"} />
-            </div>
+                {/*<OpenfortButton showAvatar={true} showBalance={true} label={"Login"} />*/}
+                <MainComponent />
+            </main>
         </Provider>
     );
 }
