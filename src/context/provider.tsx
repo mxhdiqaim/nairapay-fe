@@ -1,8 +1,9 @@
-import {type ReactNode} from "react";
+import { type ReactNode } from "react";
 import {
     // AuthProvider,
     OpenfortProvider,
-    getDefaultConfig, AuthProvider,
+    getDefaultConfig,
+    AuthProvider,
     // RecoveryMethod,
 } from "@openfort/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -15,19 +16,14 @@ const config = createConfig(
         walletConnectProjectId: "YOUR_WALLET_CONNECT_PROJECT_ID",
         chains: [polygonAmoy],
         ssr: true,
-    })
+    }),
 );
 
-const authProviders = [
-    AuthProvider.GUEST,
-    AuthProvider.EMAIL,
-    AuthProvider.GOOGLE,
-    AuthProvider.WALLET,
-]
+const authProviders = [AuthProvider.GUEST, AuthProvider.EMAIL, AuthProvider.GOOGLE, AuthProvider.WALLET];
 
 const publishableKey = import.meta.env.VITE_OPENFORT_PUBLISHABLE_KEY;
 const shieldPublishableKey = import.meta.env.VITE_OPENFORT_SHIELD_PUBLISHABLE_KEY;
-const backendUrl = import.meta.env.VITE_OPENFORT_BACKEND_ENDPOINT;
+// const backendUrl = import.meta.env.VITE_OPENFORT_BACKEND_ENDPOINT;
 
 const queryClient = new QueryClient();
 
@@ -41,7 +37,7 @@ const Provider = ({ children }: { children: ReactNode }) => {
                         shieldPublishableKey: shieldPublishableKey,
                         // If you want to use AUTOMATIC embedded wallet recovery, an encryption session is required.
                         // http://localhost:5173/docs/products/embedded-wallet/react/wallet/create#automatic-recovery.
-                        createEncryptedSessionEndpoint: backendUrl,
+                        // createEncryptedSessionEndpoint: backendUrl,
                     }}
                     uiConfig={{ authProviders }}
                 >
@@ -50,6 +46,6 @@ const Provider = ({ children }: { children: ReactNode }) => {
             </QueryClientProvider>
         </WagmiProvider>
     );
-}
+};
 
 export default Provider;
