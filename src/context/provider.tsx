@@ -28,7 +28,7 @@ const shieldPublishableKey = import.meta.env.VITE_OPENFORT_SHIELD_PUBLISHABLE_KE
 
 const queryClient = new QueryClient();
 
-const Provider = ({ children }: { children: ReactNode }) => {
+export const Provider = ({ children }: { children: ReactNode }) => {
     return (
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
@@ -55,5 +55,3 @@ const Provider = ({ children }: { children: ReactNode }) => {
         </WagmiProvider>
     );
 };
-
-export default Provider;

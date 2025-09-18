@@ -1,4 +1,4 @@
-import { useStatus, useOAuth, useSignOut, useWallets, useUser } from "@openfort/react";
+import { useStatus, useOAuth, useSignOut, useWallets, useUser, OpenfortButton } from "@openfort/react";
 
 const MainComponent = () => {
     const { isAuthenticated, isLoading: isAuthLoading } = useStatus();
@@ -80,7 +80,8 @@ const MainComponent = () => {
                 <div>
                     <h2>Sign In to NairaPay</h2>
                     <p>Please sign in with your social account to get started.</p>
-                    <button onClick={handleGoogleLogin}>Sign in with Google</button>
+                    {/*<button onClick={handleGoogleLogin}>Sign in with Google</button>*/}
+                    <OpenfortButton showAvatar={true} showBalance={true} label={"Login"} />
                 </div>
             )}
         </div>

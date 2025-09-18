@@ -1,4 +1,4 @@
-import Provider from "./context/provider.tsx";
+import { Provider } from "./context/provider.tsx";
 import MainComponent from "./component/main-component.tsx";
 // import { OpenfortButton } from "@openfort/react";
 
