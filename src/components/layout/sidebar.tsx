@@ -38,7 +38,7 @@ const SideBar: FC<Props> = ({ sx, drawerState, toggleDrawer, showDrawer }) => {
 
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
-    // function to handle both drawer close and menu expand
+    // function to handle both drawer close and menu expands
     const handleItemClick = (route: AppRouteType) => {
         if (showDrawer) return;
 
