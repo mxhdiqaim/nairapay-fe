@@ -1,11 +1,4 @@
 import { createTheme, responsiveFontSizes, type ThemeOptions } from "@mui/material/styles";
-// import "@mui/x-data-grid/themeAugmentation";
-//
-// declare module "@mui/x-data-grid" {
-//     interface NoRowsOverlayPropsOverrides {
-//         period?: string;
-//     }
-// }
 
 declare module "@mui/material/styles" {
     interface Theme {
