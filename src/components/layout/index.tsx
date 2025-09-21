@@ -1,7 +1,7 @@
 import { type FC, type ReactNode, useState } from "react";
 import { Box, useTheme } from "@mui/material";
-import AppbarComponent from "../navigation/appbar";
-import SideBar from "../navigation/sidebar";
+import AppbarComponent from "./appbar.tsx";
+import SideBar from "./sidebar.tsx";
 import useScreenSize from "@/hooks/use-screen-size.ts";
 import CustomDrawer from "@/components/ui/custom-drawer";
 
@@ -40,7 +40,6 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
             {/* Main content area */}
 
             <Box sx={{ flexGrow: 1 }}>
-                <OfflineBanner />
                 <AppbarComponent {...{ toggleDrawer, drawerState }} />
 
                 {/* Main content */}

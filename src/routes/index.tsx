@@ -11,6 +11,7 @@ export interface AppRouteType {
     useLayout?: boolean;
     authGuard?: boolean;
     hidden?: boolean; // True = Hide from the sidebar, but it accessed through navigation
+    children?: AppRouteType[];
 }
 
 export const appRoutes: AppRouteType[] = [
