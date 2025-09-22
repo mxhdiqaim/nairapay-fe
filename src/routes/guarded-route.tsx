@@ -1,35 +1,34 @@
-import ServerDown from "@/pages/feedbacks/server-down";
+// import ServerDown from "@/pages/feedbacks/server-down";
 
-import Spinner from "@/components/spinners";
-import { useAuthStatus } from "@/hooks/use-auth";
-import type { UserRole } from "@/types/user-types";
+// import Spinner from "@/components/ui/spinner";
+// import { useAuthStatus } from "@/hooks/use-auth";
 import { memo, type ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
 type GuardProps = {
     authGuard: boolean;
     children: ReactNode;
-    roles?: UserRole[];
+    // roles?: UserRole[];
 };
 
 // This is your GuardedRoute component that checks authentication status
 const GuardedRoute = memo(function GuardedRoute({ children, authGuard }: GuardProps) {
-    const { isLoading, isAuthenticated, isServerOk } = useAuthStatus();
+    // const { isLoading, isAuthenticated /* isServerOk */ } = useAuthStatus();
     const location = useLocation();
 
     // Show loading spinner if still checking status
-    if (isLoading) return <Spinner />;
+    // if (isLoading) return <Spinner />;
 
-    // Show server down page if the server isn't responding
-    if (!isServerOk) return <ServerDown />;
+    // // Show server down page if the server isn't responding
+    // if (!isServerOk) return <ServerDown />;
 
     // If the route requires auth and user is NOT authenticated, redirect to log in
-    if (authGuard && !isAuthenticated) {
+    if (authGuard /* && !isAuthenticated */) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    // If route requires auth and user is authenticated, show the page
-    if (authGuard && isAuthenticated) {
+    // If the route requires auth and user is authenticated, show the page
+    if (authGuard /* && isAuthenticated */) {
         return <>{children}</>;
     }
 
