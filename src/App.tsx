@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { appRoutes, type AppRouteType } from "./routes";
 import type { JSX } from "react";
 import Layout from "@/components/layout";
-// import { OpenfortButton } from "@openfort/react";
+import GuardedRoute from "@/routes/guarded-route.tsx";
 
 import "./App.css";
 
@@ -15,7 +15,7 @@ const renderRoutes = (routes: AppRouteType[], parentPath = ""): JSX.Element[] =>
 
         // Set defaults for layout and auth guard
         const useLayout = route.useLayout ?? true;
-        // const authGuard = route.authGuard ?? true;
+        const authGuard = route.authGuard ?? true;
 
         // Prepare the element with layout and guards if needed
         let element: JSX.Element = <route.element />;
@@ -26,9 +26,9 @@ const renderRoutes = (routes: AppRouteType[], parentPath = ""): JSX.Element[] =>
         }
 
         // Wrap with GuardedRoute if authGuard is true
-        // if (authGuard) {
-        //     element = <GuardedRoute authGuard={authGuard}>{element}</GuardedRoute>;
-        // }
+        if (authGuard) {
+            element = <GuardedRoute authGuard={authGuard}>{element}</GuardedRoute>;
+        }
 
         const currentRoute = <Route key={`${fullPath}-${index}`} path={fullPath} element={element} />;
 

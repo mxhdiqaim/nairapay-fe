@@ -1,14 +1,11 @@
-// import ServerDown from "@/pages/feedbacks/server-down";
-
-// import Spinner from "@/components/ui/spinner";
-// import { useAuthStatus } from "@/hooks/use-auth";
 import { memo, type ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+
+// import ServerDown from "@/pages/feedbacks/server-down";
 
 type GuardProps = {
     authGuard: boolean;
     children: ReactNode;
-    // roles?: UserRole[];
 };
 
 // This is your GuardedRoute component that checks authentication status
