@@ -14,7 +14,7 @@ const GuardedRoute = memo(({ children, authGuard }: Props) => {
     const location = useLocation();
 
     // If the SDK is still loading, show a spinner
-    if (!isLoading) return <Spinner />;
+    if (isLoading) return <Spinner />;
 
     // This handles the main logic for protected routes.
     // If the route requires authentication and the user is NOT authenticated,
@@ -23,7 +23,7 @@ const GuardedRoute = memo(({ children, authGuard }: Props) => {
         return <Navigate to="/auth" state={{ from: location }} replace />;
     }
 
-    // If no authentication is required (e.g., a public route), or if the user
+    // If no authentication is required (e.g. a public route), or if the user
     // is authenticated and on a protected route, just render the children.
     return <>{children}</>;
 });
