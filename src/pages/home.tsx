@@ -5,21 +5,11 @@ const HomeScreen = () => {
 
     const { user } = useUser();
     // Hooks for authentication actions
-    const { /* initOAuth, */ isLoading: isOAuthLoading } = useOAuth();
+    const { isLoading: isOAuthLoading } = useOAuth();
     const { signOut, isLoading: isSignOutLoading } = useSignOut();
 
     // Hooks for wallet management
     const { activeWallet, wallets, isLoadingWallets } = useWallets();
-
-    // // A simple function to trigger the Google login flow
-    // const handleGoogleLogin = async () => {
-    //     try {
-    //         // The initOAuth hook handles the popup and creates/connects the wallet
-    //         await initOAuth({ provider: "google" as any });
-    //     } catch (error) {
-    //         console.error("Google login failed:", error);
-    //     }
-    // };
 
     // A simple function to log out
     const handleSignOut = async () => {
@@ -80,7 +70,6 @@ const HomeScreen = () => {
                 <div>
                     <h2>Sign In to NairaPay</h2>
                     <p>Please sign in with your social account to get started.</p>
-                    {/*<button onClick={handleGoogleLogin}>Sign in with Google</button>*/}
                     <OpenfortButton showAvatar={true} showBalance={true} label={"Login"} />
                 </div>
             )}
