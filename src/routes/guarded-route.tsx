@@ -1,37 +1,30 @@
 import { memo, type ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useOAuth, useStatus } from "@openfort/react";
+import { useStatus } from "@openfort/react";
 import Spinner from "@/components/ui/spinner.tsx";
-import ServerDown from "@/pages/feedbacks/server-down.tsx";
 
 type Props = {
     authGuard: boolean;
     children: ReactNode;
 };
 
-// This is your GuardedRoute component that checks authentication status
 const GuardedRoute = memo(({ children, authGuard }: Props) => {
-    const { isAuthenticated } = useStatus();
-    const { isSuccess: isServerOk, isLoading } = useOAuth();
+    // Get authentication and loading status from the Openfort SDK
+    const { isAuthenticated, isLoading } = useStatus();
     const location = useLocation();
 
-    // Show loading spinner if still checking status
+    // If the SDK is still loading, show a spinner
     if (isLoading) return <Spinner />;
 
-    // // Show server down page if the server isn't responding
-    if (!isServerOk) return <ServerDown />;
-
-    // If the route requires auth and the user is NOT authenticated, redirect to log in
+    // This handles the main logic for protected routes.
+    // If the route requires authentication and the user is NOT authenticated,
+    // redirect them to the login page.
     if (authGuard && !isAuthenticated) {
-        return <Navigate to="/login" state={{ from: location }} replace />;
+        return <Navigate to="/auth" state={{ from: location }} replace />;
     }
 
-    // If the route requires auth and the user is authenticated, show the page
-    if (authGuard && isAuthenticated) {
-        return <>{children}</>;
-    }
-
-    // If no authentication is required, just render the children
+    // If no authentication is required (e.g., a public route), or if the user
+    // is authenticated and on a protected route, just render the children.
     return <>{children}</>;
 });
 

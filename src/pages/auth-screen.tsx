@@ -1,33 +1,29 @@
+import { useEffect } from "react";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { OpenfortButton, useOAuth } from "@openfort/react";
+import { OpenfortButton, useStatus } from "@openfort/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useNotifier from "@/hooks/use-notifier.ts";
 
-const LoginScreen = () => {
+const AuthScreen = () => {
     const notify = useNotifier();
     const navigate = useNavigate();
     const location = useLocation();
-    const { isLoading } = useOAuth();
+
+    // Get the authentication status from the Openfort SDK
+    const { isAuthenticated, isLoading } = useStatus();
 
     // Get the path the user was trying to access before being redirected
     const from = location.state?.from?.pathname || "/";
 
-    const onSubmit = async () => {
-        try {
-            // Login logics
-
-            // On successful login, navigate to the intended page or a default.
+    useEffect(() => {
+        // Check if the user is authenticated and not currently loading.
+        if (isAuthenticated && !isLoading) {
+            // Show a success notification
+            notify("Successfully logged in", "success");
+            // Navigate to the intended page or a default route.
             navigate(from, { replace: true });
-
-            notify("Successfully login", "success");
-        } catch (err) {
-            console.log(err);
-            // const defaultMessage = "Something went wrong. Please try again.";
-            // const apiError = getApiError(err, defaultMessage);
-
-            notify("Something went wrong. Please try again.", "error");
         }
-    };
+    }, [isAuthenticated, isLoading, navigate, from, notify]);
 
     return (
         <Grid container spacing={2}>
@@ -68,7 +64,6 @@ const LoginScreen = () => {
                             showBalance={true}
                             label={"Login"}
                             disabled={isLoading}
-                            onClick={onSubmit}
                         >
                             {isLoading ? "Logging in..." : "Login"}
                         </Button>
@@ -79,4 +74,4 @@ const LoginScreen = () => {
     );
 };
 
-export default LoginScreen;
+export default AuthScreen;

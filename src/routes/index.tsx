@@ -1,6 +1,6 @@
 import type { ComponentType, ReactNode } from "react";
 import HomeScreen from "../pages/home.tsx";
-import LoginScreen from "../pages/login-screen.tsx";
+import AuthScreen from "../pages/auth-screen.tsx";
 import NotFoundScreen from "../pages/404.tsx";
 
 export interface AppRouteType {
@@ -24,25 +24,11 @@ export const appRoutes: AppRouteType[] = [
 
     // Public Routes
     {
-        to: "/login",
-        element: LoginScreen,
+        to: "/auth",
+        element: AuthScreen,
         useLayout: false,
         authGuard: false,
     },
-    // {
-    //     to: "/register",
-    //     element: RegisterScreen,
-    //     useLayout: false,
-    //     authGuard: false,
-    //     roles: [UserRoleEnum.GUEST],
-    // },
-    // {
-    //     to: "/forget-password",
-    //     element: ForgetPasswordScreen,
-    //     useLayout: false,
-    //     authGuard: false,
-    //     roles: [UserRoleEnum.GUEST],
-    // },
 
     // Error Pages
     {
