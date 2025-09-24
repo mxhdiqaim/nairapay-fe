@@ -14,7 +14,7 @@ const GuardedRoute = memo(({ children, authGuard }: Props) => {
     const location = useLocation();
 
     // If the SDK is still loading, show a spinner
-    if (isLoading) return <Spinner />;
+    if (!isLoading) return <Spinner />;
 
     // This handles the main logic for protected routes.
     // If the route requires authentication and the user is NOT authenticated,

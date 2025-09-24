@@ -16,14 +16,14 @@ const renderRoutes = (routes: AppRouteType[], parentPath = ""): JSX.Element[] =>
 
         let element: JSX.Element = <route.element />;
 
-        // First, apply the auth guard if it is required for this route.
-        if (authGuard) {
-            element = <GuardedRoute authGuard={authGuard}>{element}</GuardedRoute>;
-        }
-
-        // Then, wrap the element in a layout if a layout is required.
+        // First, wrap the element in a layout if a layout is required.
         if (useLayout) {
             element = <Layout>{element}</Layout>;
+        }
+
+        // Then, apply the auth guard if it is required for this route.
+        if (authGuard) {
+            element = <GuardedRoute authGuard={authGuard}>{element}</GuardedRoute>;
         }
 
         const currentRoute = <Route key={`${fullPath}-${index}`} path={fullPath} element={element} />;

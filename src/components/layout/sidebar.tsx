@@ -15,16 +15,18 @@ import {
     type SxProps,
     type Theme,
     useTheme,
+    Button,
 } from "@mui/material";
 import { type FC, Fragment, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import type { Props as AppBarProps } from "./appbar";
+import { useSignOut } from "@openfort/react";
 
 import CollapseSvgIcon from "@/assets/collapse.svg";
 import CancelSvgIcon from "@/assets/cancel.svg";
-
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
+import { LogoutOutlined } from "@mui/icons-material";
 
 interface Props extends AppBarProps {
     sx?: SxProps<Theme>;
@@ -35,6 +37,7 @@ const SideBar: FC<Props> = ({ sx, drawerState, toggleDrawer, showDrawer }) => {
     const theme = useTheme();
     const location = useLocation();
     const screenSize = useScreenSize();
+    const { signOut, isLoading } = useSignOut();
 
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
@@ -78,6 +81,14 @@ const SideBar: FC<Props> = ({ sx, drawerState, toggleDrawer, showDrawer }) => {
                 }
                 return route;
             });
+    };
+
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+        } catch (error) {
+            console.error("Sign out failed:", error);
+        }
     };
 
     const renderMenuItem = (route: AppRouteType, index: number, level: number = 0, parentPath: string = "") => {
@@ -226,6 +237,35 @@ const SideBar: FC<Props> = ({ sx, drawerState, toggleDrawer, showDrawer }) => {
                 {/* Routes rendering */}
                 <Box sx={{ flexGrow: 1, overflowY: "auto", mt: 3 }}>
                     {filterRoutes(appRoutes).map((route, index) => renderMenuItem(route, index))}
+                </Box>
+
+                <Box position={"absolute"} bottom={0} width={"100%"} p={2}>
+                    <Button
+                        fullWidth
+                        onClick={handleSignOut}
+                        disabled={isLoading}
+                        variant="contained"
+                        startIcon={<LogoutOutlined />}
+                        sx={{
+                            backgroundColor: theme.palette.error.main,
+                            color: theme.palette.error.contrastText,
+                            justifyContent: "flex-start",
+                            py: 1.5,
+                            px: 2,
+                            boxShadow: theme.customShadows.button,
+                            transition: theme.transitions.create(["background-color", "transform"], {
+                                duration: theme.transitions.duration.short,
+                            }),
+                            "&:hover": {
+                                // Darken the button on hover for clear visual feedback
+                                backgroundColor: theme.palette.error.dark,
+                                // Add a subtle scale effect for a modern feel
+                                transform: "scale(1.02)",
+                            },
+                        }}
+                    >
+                        {isLoading ? "Logging out..." : "Logout"}
+                    </Button>
                 </Box>
             </List>
         </Drawer>

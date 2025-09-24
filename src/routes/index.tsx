@@ -37,5 +37,6 @@ export const appRoutes: AppRouteType[] = [
         element: NotFoundScreen,
         hidden: true,
         useLayout: false,
+        authGuard: false,
     },
 ];
