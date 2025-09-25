@@ -5,9 +5,9 @@ import { WagmiProvider, createConfig } from "wagmi";
 import { polygonAmoy } from "viem/chains";
 import { getEnvVariable } from "@/utils";
 
-const publishableKey = getEnvVariable("VITE_OPENFORT_PUBLISHABLE_KEY", import.meta.env);
-const shieldPublishableKey = getEnvVariable("VITE_OPENFORT_SHIELD_PUBLISHABLE_KEY", import.meta.env);
-const walletConnectProjectId = getEnvVariable("VITE_WALLET_CONNECT_PROJECT_ID", import.meta.env);
+const publishableKey = getEnvVariable("VITE_OPENFORT_PUBLISHABLE_KEY");
+const shieldPublishableKey = getEnvVariable("VITE_OPENFORT_SHIELD_PUBLISHABLE_KEY");
+const walletConnectProjectId = getEnvVariable("VITE_WALLET_CONNECT_PROJECT_ID");
 
 const config = createConfig(
     getDefaultConfig({

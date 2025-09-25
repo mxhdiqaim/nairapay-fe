@@ -1,6 +1,9 @@
-import { useStatus, useOAuth, useSignOut, useWallets, useUser, OpenfortButton } from "@openfort/react";
-import { useReadContract } from "wagmi";
 import { formatUnits } from "viem";
+import { useReadContract } from "wagmi";
+import { useStatus, useWallets, useUser } from "@openfort/react";
+import { Box, Typography, CircularProgress, Divider, List, ListItem, Alert, Chip, Stack } from "@mui/material";
+import CustomCard from "@/components/ui/custom-card.tsx";
+import { getEnvVariable } from "@/utils";
 
 // ABI for a standard ERC-20 token (only the necessary functions)
 const erc20Abi = [
@@ -21,16 +24,13 @@ const erc20Abi = [
 ] as const;
 
 // USDC testnet token address on Polygon Amoy
-const stablecoinAddress = "0x41E94Eb019C0762f9Bfcf9Fb1E58725BfB0e7582";
+const stablecoinAddress = getEnvVariable("VITE_STABLECOIN_ADDRESS");
 
 const HomeScreen = () => {
-    const { isAuthenticated, isLoading: isAuthLoading } = useStatus();
+    const { isLoading: isAuthLoading } = useStatus();
     const { user } = useUser();
-    const { isLoading: isOAuthLoading } = useOAuth();
-    const { isLoading: isSignOutLoading } = useSignOut();
     const { activeWallet, wallets, isLoadingWallets } = useWallets();
 
-    // Use wagmi's useReadContract to fetch the stablecoin balance
     const {
         data: balance,
         isLoading: isBalanceLoading,
@@ -41,72 +41,86 @@ const HomeScreen = () => {
         functionName: "balanceOf",
         args: [activeWallet?.address as `0x${string}`],
         query: {
-            // This ensures the query only runs when a wallet address is available
             enabled: !!activeWallet?.address,
         },
     });
 
-    const isLoading = isAuthLoading || isOAuthLoading || isSignOutLoading || isLoadingWallets || isBalanceLoading;
-
     const formattedBalance = balance ? formatUnits(balance, 6) : "0.00";
 
+    const isLoading = isAuthLoading || isLoadingWallets || isBalanceLoading;
+
+    if (isLoading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
+
     return (
-        <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-            <h1>NairaPay dApp</h1>
+        <Box alignItems="center">
+            <CustomCard>
+                <Box>
+                    <Typography variant="h4" gutterBottom>
+                        Welcome, {user?.player?.name || "User"}!
+                    </Typography>
 
-            {isLoading ? (
-                <p>Loading...</p>
-            ) : isAuthenticated ? (
-                <div>
-                    <h2>Welcome, {user?.player?.name || "User"}!</h2>
-                    <p>You are authenticated. You can now interact with the blockchain.</p>
-
-                    {isLoadingWallets ? (
-                        <p>Fetching wallets...</p>
-                    ) : activeWallet ? (
-                        <div>
-                            <h3>Your Active Wallet:</h3>
-                            <p>
-                                Address: <code>{activeWallet.address}</code>
-                            </p>
-                            <p>
-                                Account ID: <code>{activeWallet.accountId}</code>
-                            </p>
-                            <p>Type: {activeWallet.accountType}</p>
-                            <p>Recovery Method: {activeWallet.recoveryMethod}</p>
-
-                            <h4 style={{ marginTop: "20px" }}>Your Stablecoin Balance:</h4>
-                            {isBalanceLoading ? (
-                                <p>Loading balance...</p>
-                            ) : balanceError ? (
-                                <p>Error loading balance. Make sure your network is set to Polygon Amoy.</p>
-                            ) : (
-                                <p>**{formattedBalance} USDC**</p>
-                            )}
+                    {activeWallet ? (
+                        <Stack spacing={3}>
+                            <Box>
+                                <Typography variant="h6">Your Active Wallet</Typography>
+                                <Chip
+                                    label={activeWallet.address}
+                                    variant="outlined"
+                                    sx={{ mt: 1, fontFamily: "monospace" }}
+                                />
+                            </Box>
+                            <Divider />
+                            <Box>
+                                <Typography variant="h6" sx={{ mb: 1 }}>
+                                    Your Balance
+                                </Typography>
+                                {balanceError ? (
+                                    <Alert severity="error">
+                                        Error loading balance. Make sure your network is set to Polygon Amoy.
+                                    </Alert>
+                                ) : (
+                                    <Typography variant="h5" component="p" fontWeight="bold" color="primary">
+                                        NGNC {formattedBalance}
+                                    </Typography>
+                                )}
+                            </Box>
 
                             {wallets.length > 1 && (
-                                <div>
-                                    <h4>Other Wallets:</h4>
-                                    <ul>
-                                        {wallets.map((w) => (
-                                            <li key={w.address}>{w.address}</li>
-                                        ))}
-                                    </ul>
-                                </div>
+                                <>
+                                    <Divider />
+                                    <Box>
+                                        <Typography variant="h6">Other Wallets</Typography>
+                                        <List dense>
+                                            {wallets
+                                                .filter((w) => w.address !== activeWallet.address)
+                                                .map((w) => (
+                                                    <ListItem key={w.address} disableGutters>
+                                                        <Chip
+                                                            label={w.address}
+                                                            size="small"
+                                                            sx={{ fontFamily: "monospace" }}
+                                                        />
+                                                    </ListItem>
+                                                ))}
+                                        </List>
+                                    </Box>
+                                </>
                             )}
-                        </div>
+                        </Stack>
                     ) : (
-                        <p>No active wallet found. A wallet should be created automatically.</p>
+                        <Alert severity="warning">
+                            No active wallet found. A wallet should be created automatically.
+                        </Alert>
                     )}
-                </div>
-            ) : (
-                <div>
-                    <h2>Sign In to NairaPay</h2>
-                    <p>Please sign in with your social account to get started.</p>
-                    <OpenfortButton showAvatar={true} showBalance={true} label={"Login"} />
-                </div>
-            )}
-        </div>
+                </Box>
+            </CustomCard>
+        </Box>
     );
 };
 

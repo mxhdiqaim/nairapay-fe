@@ -1,8 +1,8 @@
-export const getEnvVariable = (envKey: string, env: ImportMetaEnv) => {
-    const value = env[envKey];
+export const getEnvVariable = (envKey: string) => {
+    const value = import.meta.env[envKey];
     if (!value) {
         throw new Error(`${envKey} variable is not set`);
     }
 
-    return value
+    return value;
 };

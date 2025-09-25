@@ -62,10 +62,10 @@ const AuthScreen = () => {
                             component={OpenfortButton}
                             showAvatar={true}
                             showBalance={true}
-                            label={"Login"}
+                            label={"Authenticate"}
                             disabled={isLoading}
                         >
-                            {isLoading ? "Logging in..." : "Login"}
+                            {isLoading ? "Authenticating..." : "Authenticate"}
                         </Button>
                     </Box>
                 </Box>
