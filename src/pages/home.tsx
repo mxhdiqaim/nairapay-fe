@@ -1,19 +1,9 @@
-import { useStatus, useOAuth, useSignOut, useWallets, useUser } from "@openfort/react";
-import { useReadContract } from "wagmi";
 import { formatUnits } from "viem";
-import {
-    Box,
-    Typography,
-    CircularProgress,
-    Divider,
-    List,
-    ListItem,
-    Alert,
-    Chip,
-    Stack,
-    Skeleton,
-} from "@mui/material";
+import { useReadContract } from "wagmi";
+import { useStatus, useWallets, useUser } from "@openfort/react";
+import { Box, Typography, CircularProgress, Divider, List, ListItem, Alert, Chip, Stack } from "@mui/material";
 import CustomCard from "@/components/ui/custom-card.tsx";
+import { getEnvVariable } from "@/utils";
 
 // ABI for a standard ERC-20 token (only the necessary functions)
 const erc20Abi = [
@@ -34,13 +24,11 @@ const erc20Abi = [
 ] as const;
 
 // USDC testnet token address on Polygon Amoy
-const stablecoinAddress = "0x41E94Eb019C0762f9Bfcf9Fb1E58725BfB0e7582";
+const stablecoinAddress = getEnvVariable("VITE_STABLECOIN_ADDRESS");
 
 const HomeScreen = () => {
     const { isLoading: isAuthLoading } = useStatus();
     const { user } = useUser();
-    const { isLoading: isOAuthLoading } = useOAuth();
-    const { isLoading: isSignOutLoading } = useSignOut();
     const { activeWallet, wallets, isLoadingWallets } = useWallets();
 
     const {
@@ -57,8 +45,9 @@ const HomeScreen = () => {
         },
     });
 
-    const isLoading = isAuthLoading || isOAuthLoading || isSignOutLoading;
     const formattedBalance = balance ? formatUnits(balance, 6) : "0.00";
+
+    const isLoading = isAuthLoading || isLoadingWallets || isBalanceLoading;
 
     if (isLoading) {
         return (
@@ -76,9 +65,7 @@ const HomeScreen = () => {
                         Welcome, {user?.player?.name || "User"}!
                     </Typography>
 
-                    {isLoadingWallets ? (
-                        <Skeleton variant="rectangular" height={100} />
-                    ) : activeWallet ? (
+                    {activeWallet ? (
                         <Stack spacing={3}>
                             <Box>
                                 <Typography variant="h6">Your Active Wallet</Typography>
@@ -91,17 +78,15 @@ const HomeScreen = () => {
                             <Divider />
                             <Box>
                                 <Typography variant="h6" sx={{ mb: 1 }}>
-                                    Your Stablecoin Balance
+                                    Your Balance
                                 </Typography>
-                                {isBalanceLoading ? (
-                                    <Skeleton width="100px" />
-                                ) : balanceError ? (
+                                {balanceError ? (
                                     <Alert severity="error">
                                         Error loading balance. Make sure your network is set to Polygon Amoy.
                                     </Alert>
                                 ) : (
                                     <Typography variant="h5" component="p" fontWeight="bold" color="primary">
-                                        {formattedBalance} USDC
+                                        NGNC {formattedBalance}
                                     </Typography>
                                 )}
                             </Box>
