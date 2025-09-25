@@ -1,9 +1,12 @@
-import { useState } from "react";
 import { useWriteContract } from "wagmi";
 import { parseUnits } from "viem";
 import { Box, TextField, Button, Typography, Alert, CircularProgress } from "@mui/material";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { getEnvVariable } from "@/utils";
 import CustomCard from "@/components/ui/custom-card.tsx";
+import useNotifier from "@/hooks/use-notifier.ts";
+import { validationSchema, type FormData } from "@/types";
 
 // ABI for a standard ERC-20 token
 const erc20Abi = [
@@ -20,35 +23,36 @@ const erc20Abi = [
 ] as const;
 
 // USDC testnet token address on Polygon Amoy
-const stablecoinAddress = getEnvVariable("VITE_STABLECOIN_ADDRESS") as const;
+const stablecoinAddress = getEnvVariable("VITE_STABLECOIN_ADDRESS") as `0x${string}`;
 
 const SendCoins = () => {
-    const [recipient, setRecipient] = useState("");
-    const [amount, setAmount] = useState("");
-
-    // The wagmi hook for writing to a contract
+    const notify = useNotifier();
     const { writeContract, isPending, isSuccess, isError, data: transactionHash, error } = useWriteContract();
 
-    const handleSend = () => {
-        if (!recipient || !amount) {
-            alert("Please enter a recipient address and amount.");
-            return;
-        }
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<FormData>({
+        resolver: yupResolver(validationSchema),
+        defaultValues: {
+            recipient: "",
+            amount: undefined,
+        },
+    });
 
+    const onSubmit = (data: FormData) => {
         try {
-            // Convert the human-readable amount to the contract's required format (wei)
-            const amountInWei = parseUnits(amount, 6);
-
-            // Call the `transfer` function on the stablecoin contract
+            const amountInWei = parseUnits(String(data.amount), 6);
             writeContract({
                 address: stablecoinAddress,
                 abi: erc20Abi,
                 functionName: "transfer",
-                args: [recipient, amountInWei],
+                args: [data.recipient as `0x${string}`, amountInWei],
             });
         } catch (e) {
             console.error("Error preparing transaction:", e);
-            alert("Invalid amount or recipient address.");
+            notify("An unexpected error occurred.", "error");
         }
     };
 
@@ -58,26 +62,42 @@ const SendCoins = () => {
                 <Typography variant="h6" gutterBottom>
                     Send Stablecoins
                 </Typography>
-                <Box component="form" noValidate autoComplete="off" sx={{ "& .MuiTextField-root": { mt: 2 } }}>
-                    <TextField
-                        fullWidth
-                        label="Recipient Address"
-                        value={recipient}
-                        onChange={(e) => setRecipient(e.target.value)}
-                        placeholder="0x..."
+                <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+                    <Controller
+                        name="recipient"
+                        control={control}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                fullWidth
+                                label="Recipient Address"
+                                placeholder="0x..."
+                                error={!!errors.recipient}
+                                helperText={errors.recipient?.message}
+                                sx={{ mt: 2 }}
+                            />
+                        )}
                     />
-                    <TextField
-                        fullWidth
-                        label="Amount (NGNC)"
-                        type="number"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        placeholder="0.00"
+                    <Controller
+                        name="amount"
+                        control={control}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                fullWidth
+                                label="Amount (NGNC)"
+                                type="number"
+                                placeholder="0.00"
+                                error={!!errors.amount}
+                                helperText={errors.amount?.message}
+                                sx={{ mt: 2 }}
+                            />
+                        )}
                     />
+                    <Button type="submit" variant="contained" disabled={isPending} sx={{ mt: 3 }}>
+                        {isPending ? <CircularProgress size={24} /> : "Send"}
+                    </Button>
                 </Box>
-                <Button variant="contained" onClick={handleSend} disabled={isPending} sx={{ mt: 2 }}>
-                    {isPending ? <CircularProgress size={24} /> : "Send"}
-                </Button>
 
                 {isPending && (
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>

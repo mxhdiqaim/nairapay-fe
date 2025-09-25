@@ -4,6 +4,7 @@ import AuthScreen from "../pages/auth-screen.tsx";
 import NotFoundScreen from "../pages/404.tsx";
 import TransactionScreen from "@/pages/transaction-screen.tsx";
 import SendCoins from "@/pages/send-coins.tsx";
+import ReceiveCoins from "@/pages/receive-coins.tsx";
 
 export interface AppRouteType {
     to: string;
@@ -28,6 +29,12 @@ export const appRoutes: AppRouteType[] = [
         title: "Send",
         element: SendCoins,
         icon: "🚀",
+    },
+    {
+        to: "/receive",
+        title: "Receive",
+        element: ReceiveCoins,
+        icon: "📥",
     },
     {
         to: "/transactions",
