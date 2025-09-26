@@ -4,7 +4,7 @@ import { getEnvVariable } from "@/utils";
 
 // Polygon Amoy's Chain ID
 const amoyChainId = 80002 as const;
-const polygonscanApiKey = getEnvVariable("VITE_POLYGONSCAN_API_KEY") as const;
+const polygonscanApiKey = getEnvVariable("VITE_POLYGONSCAN_API_KEY");
 
 export const useTransactions = (address: string | undefined) => {
     const [transactions, setTransactions] = useState<Transaction[] | null>(null);

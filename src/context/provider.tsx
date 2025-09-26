@@ -28,13 +28,7 @@ export const Provider = ({ children }: { children: ReactNode }) => {
             <QueryClientProvider client={queryClient}>
                 <OpenfortProvider
                     publishableKey={publishableKey}
-                    walletConfig={{
-                        shieldPublishableKey,
-                        // NOTE: This is only needed if you want to use AUTOMATIC embedded wallet recovery.
-                        // To use AUTOMATIC embedded wallet recovery, an encryption session is required.
-                        // http://localhost:5173/docs/products/embedded-wallet/react/wallet/create#automatic-recovery.
-                        // createEncryptedSessionEndpoint: backendUrl,
-                    }}
+                    walletConfig={{ shieldPublishableKey }}
                     uiConfig={{
                         authProviders,
                         theme: "midnight",
