@@ -20,6 +20,8 @@ const config = createConfig(
 
 const authProviders = [AuthProvider.GUEST, AuthProvider.EMAIL, AuthProvider.GOOGLE, AuthProvider.WALLET];
 
+const allowedMethods = [RecoveryMethod.PASSWORD, RecoveryMethod.AUTOMATIC, RecoveryMethod.PASSKEY];
+
 const queryClient = new QueryClient();
 
 export const Provider = ({ children }: { children: ReactNode }) => {
@@ -33,8 +35,8 @@ export const Provider = ({ children }: { children: ReactNode }) => {
                         authProviders,
                         theme: "midnight",
                         walletRecovery: {
+                            allowedMethods,
                             defaultMethod: RecoveryMethod.PASSWORD,
-                            allowedMethods: [RecoveryMethod.PASSWORD, RecoveryMethod.AUTOMATIC, RecoveryMethod.PASSKEY],
                         },
                     }}
                 >

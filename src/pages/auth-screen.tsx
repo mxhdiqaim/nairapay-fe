@@ -9,11 +9,11 @@ const AuthScreen = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Get the authentication status from the Openfort SDK
-    const { isAuthenticated, isLoading } = useStatus();
-
     // Get the path the user was trying to access before being redirected
     const from = location.state?.from?.pathname || "/";
+
+    // Get the authentication status from the Openfort SDK
+    const { isAuthenticated, isLoading } = useStatus();
 
     useEffect(() => {
         // Check if the user is authenticated and not currently loading.
