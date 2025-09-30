@@ -8,8 +8,8 @@ import { getEnvVariable } from "@/utils";
 
 const backendUrl = getEnvVariable("VITE_BACKEND_URL");
 const publishableKey = getEnvVariable("VITE_OPENFORT_PUBLISHABLE_KEY");
-const shieldPublishableKey = getEnvVariable("VITE_OPENFORT_SHIELD_PUBLISHABLE_KEY");
 const walletConnectProjectId = getEnvVariable("VITE_WALLET_CONNECT_PROJECT_ID");
+const shieldPublishableKey = getEnvVariable("VITE_OPENFORT_SHIELD_PUBLISHABLE_KEY");
 
 const config = createConfig(
     getDefaultConfig({

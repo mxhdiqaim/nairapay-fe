@@ -15,4 +15,9 @@ export const validationSchema = yup.object({
         .positive("Amount must be greater than 0"),
 });
 
+export const createWalletSchema = yup.object().shape({
+    password: yup.string().required("Password is required").min(8, "Password must be at least 8 characters"),
+});
+
 export type FormData = yup.InferType<typeof validationSchema>;
+export type CreateWalletFormData = yup.InferType<typeof createWalletSchema>;

@@ -1,9 +1,10 @@
 import { formatUnits } from "viem";
 import { useReadContract } from "wagmi";
-import { useStatus, useWallets, useUser } from "@openfort/react";
-import { Box, Typography, CircularProgress, Divider, List, ListItem, Alert, Chip, Stack } from "@mui/material";
+import { useStatus, useUser, useWallets } from "@openfort/react";
+import { Alert, Box, Chip, CircularProgress, Divider, List, ListItem, Stack, Typography } from "@mui/material";
 import CustomCard from "@/components/ui/custom-card.tsx";
 import { getEnvVariable } from "@/utils";
+import CreateWallet from "@/components/create-wallet.tsx";
 
 // ABI for a standard ERC-20 token (only the necessary functions)
 const erc20Abi = [
@@ -49,6 +50,11 @@ const HomeScreen = () => {
 
     const isLoading = isAuthLoading || isLoadingWallets || isBalanceLoading;
 
+    // New conditional rendering logic
+    if (!activeWallet) {
+        return <CreateWallet />;
+    }
+
     if (isLoading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
@@ -60,65 +66,63 @@ const HomeScreen = () => {
     return (
         <Box alignItems="center">
             <CustomCard>
-                <Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <Typography variant="h4" gutterBottom>
                         Welcome, {user?.player?.name || "User"}!
                     </Typography>
-
-                    {activeWallet ? (
-                        <Stack spacing={3}>
-                            <Box>
-                                <Typography variant="h6">Your Active Wallet</Typography>
-                                <Chip
-                                    label={activeWallet.address}
-                                    variant="outlined"
-                                    sx={{ mt: 1, fontFamily: "monospace" }}
-                                />
-                            </Box>
-                            <Divider />
-                            <Box>
-                                <Typography variant="h6" sx={{ mb: 1 }}>
-                                    Your Balance
-                                </Typography>
-                                {balanceError ? (
-                                    <Alert severity="error">
-                                        Error loading balance. Make sure your network is set to Polygon Amoy.
-                                    </Alert>
-                                ) : (
-                                    <Typography variant="h5" component="p" fontWeight="bold" color="primary">
-                                        NGNC {formattedBalance}
-                                    </Typography>
-                                )}
-                            </Box>
-
-                            {wallets.length > 1 && (
-                                <>
-                                    <Divider />
-                                    <Box>
-                                        <Typography variant="h6">Other Wallets</Typography>
-                                        <List dense>
-                                            {wallets
-                                                .filter((w) => w.address !== activeWallet.address)
-                                                .map((w) => (
-                                                    <ListItem key={w.address} disableGutters>
-                                                        <Chip
-                                                            label={w.address}
-                                                            size="small"
-                                                            sx={{ fontFamily: "monospace" }}
-                                                        />
-                                                    </ListItem>
-                                                ))}
-                                        </List>
-                                    </Box>
-                                </>
-                            )}
-                        </Stack>
-                    ) : (
-                        <Alert severity="warning">
-                            No active wallet found. A wallet should be created automatically.
-                        </Alert>
-                    )}
                 </Box>
+
+                {activeWallet ? (
+                    <Stack spacing={3}>
+                        <Box>
+                            <Typography variant="h6">Your Active Wallet</Typography>
+                            <Chip
+                                label={activeWallet.address}
+                                variant="outlined"
+                                sx={{ mt: 1, fontFamily: "monospace" }}
+                            />
+                        </Box>
+                        <Divider />
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 1 }}>
+                                Your Balance
+                            </Typography>
+                            {balanceError ? (
+                                <Alert severity="error">
+                                    Error loading balance. Make sure your network is set to Polygon Amoy.
+                                </Alert>
+                            ) : (
+                                <Typography variant="h5" component="p" fontWeight="bold" color="primary">
+                                    NGNC {formattedBalance}
+                                </Typography>
+                            )}
+                        </Box>
+
+                        {wallets.length > 1 && (
+                            <>
+                                <Divider />
+                                <Box>
+                                    <Typography variant="h6">Other Wallets</Typography>
+                                    <List dense>
+                                        {wallets
+                                            .filter((w) => w.address !== activeWallet.address)
+                                            .map((w) => (
+                                                <ListItem key={w.address} disableGutters>
+                                                    <Chip
+                                                        label={w.address}
+                                                        size="small"
+                                                        sx={{ fontFamily: "monospace" }}
+                                                    />
+                                                </ListItem>
+                                            ))}
+                                    </List>
+                                </Box>
+                            </>
+                        )}
+                    </Stack>
+                ) : (
+                    <Alert severity="warning">No active wallet found. A wallet should be created automatically.</Alert>
+                )}
             </CustomCard>
         </Box>
     );
