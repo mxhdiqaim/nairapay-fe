@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { formatUnits, type Hex } from "viem";
 import { useReadContract } from "wagmi";
 import { embeddedWalletId, useStatus, useUser, useWallets } from "@openfort/react";
@@ -6,7 +7,6 @@ import CustomCard from "@/components/ui/custom-card.tsx";
 import { getEnvVariable } from "@/utils";
 import CreateWallet from "@/components/create-wallet.tsx";
 import useNotifier from "@/hooks/use-notifier.ts";
-import { useState } from "react";
 
 // ABI for a standard ERC-20 token (only the necessary functions)
 const erc20Abi = [
