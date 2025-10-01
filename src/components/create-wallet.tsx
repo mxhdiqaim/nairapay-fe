@@ -8,8 +8,8 @@ import { type CreateWalletFormData, createWalletSchema } from "@/types";
 import useNotifier from "@/hooks/use-notifier.ts";
 
 const CreateWallet = () => {
-    const notify = useNotifier();
     const { createWallet } = useWallets();
+    const notify = useNotifier();
     const [isCreating, setIsCreating] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
