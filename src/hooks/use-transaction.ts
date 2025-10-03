@@ -1,64 +1,54 @@
-import { useState, useEffect } from "react";
-import type { Transaction } from "viem";
+import { useCallback } from "react";
+import { parseUnits } from "viem";
+import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { getEnvVariable } from "@/utils";
 
-// Polygon Amoy's Chain ID
-const amoyChainId = 80002 as const;
-const polygonscanApiKey = getEnvVariable("VITE_POLYGONSCAN_API_KEY");
+const stablecoinAddress = getEnvVariable("VITE_STABLECOIN_ADDRESS") as `0x${string}`;
 
-export const useTransactions = (address: string | undefined) => {
-    const [transactions, setTransactions] = useState<Transaction[] | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+const erc20Abi = [
+    {
+        name: "transfer",
+        type: "function",
+        stateMutability: "nonpayable",
+        inputs: [
+            { name: "to", type: "address" },
+            { name: "value", type: "uint256" },
+        ],
+        outputs: [{ type: "bool" }],
+    },
+] as const;
 
-    const isEnabled = !!address && !!polygonscanApiKey;
+export const useSendTransaction = () => {
+    const { address } = useAccount();
+    const { writeContract, data: hash, isPending, error } = useWriteContract();
+    const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash });
 
-    useEffect(() => {
-        const fetchTransactions = async () => {
-            if (!isEnabled) {
+    const sendTransaction = useCallback(
+        (to: `0x${string}`, amount: string) => {
+            if (!address) {
+                console.error("Wallet not connected");
                 return;
             }
 
-            setIsLoading(true);
-            setError(null);
+            const amountInWei = parseUnits(amount, 6);
 
-            // Updated URL to use the V2 endpoint with chainid
-            const apiUrl = `https://api.etherscan.io/v2/api?chainid=${amoyChainId}&module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${polygonscanApiKey}`;
+            // Use the `writeContract` function here
+            writeContract({
+                address: stablecoinAddress,
+                abi: erc20Abi,
+                functionName: "transfer",
+                args: [to, amountInWei],
+            });
+        },
+        [address, writeContract],
+    );
 
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (data.status === "1") {
-                    setTransactions(data.result);
-                } else if (data.status === "0") {
-                    if (data.result === "Invalid API Key") {
-                        setError("Invalid API Key. Please check your .env file or try a new key.");
-                    } else if (data.result === "No transactions found") {
-                        setError("No transactions found for this address.");
-                        setTransactions([]);
-                    } else {
-                        // Handle the case where the result is blank or an unknown error
-                        const errorMessage = data.result || "An unknown API error occurred. Please try again later.";
-                        setError(`API Error: ${errorMessage}`);
-                    }
-                } else {
-                    throw new Error(data.message || "An unknown error occurred.");
-                }
-            } catch (e: unknown) {
-                if (e instanceof Error) {
-                    setError(e.message);
-                } else {
-                    setError("An unknown error occurred.");
-                }
-                console.error("Failed to fetch transactions:", e);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchTransactions();
-    }, [address, isEnabled]);
-
-    return { transactions, isLoading, error };
+    return {
+        sendTransaction,
+        hash,
+        isPending,
+        isConfirming,
+        isConfirmed,
+        error,
+    };
 };

@@ -1,4 +1,4 @@
-import { alpha, AppBar, Typography, useTheme } from "@mui/material";
+import { alpha, AppBar, useTheme } from "@mui/material";
 import { type FC } from "react";
 
 export interface Props {
@@ -6,7 +6,7 @@ export interface Props {
     drawerState?: boolean;
 }
 
-const AppbarComponent: FC<Props> = () => {
+const Appbar: FC<Props> = () => {
     const theme = useTheme();
 
     return (
@@ -20,10 +20,8 @@ const AppbarComponent: FC<Props> = () => {
                 borderBottom: `1px solid ${theme.palette.divider}`,
                 width: { md: `calc(100% - ${theme.layout.sidebarWidth})` },
             }}
-        >
-            <Typography variant={"h4"}>NairaPay</Typography>
-        </AppBar>
+        />
     );
 };
 
-export default AppbarComponent;
+export default Appbar;

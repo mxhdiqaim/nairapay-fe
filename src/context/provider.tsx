@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { OpenfortProvider, getDefaultConfig, AuthProvider, RecoveryMethod } from "@openfort/react";
 import { AccountTypeEnum } from "@openfort/openfort-js";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WagmiProvider, createConfig } from "wagmi";
+import { WagmiProvider, createConfig, http } from "wagmi";
 import { polygonAmoy } from "viem/chains";
 import { getEnvVariable } from "@/utils";
 
@@ -10,6 +10,7 @@ const backendUrl = getEnvVariable("VITE_BACKEND_URL");
 const publishableKey = getEnvVariable("VITE_OPENFORT_PUBLISHABLE_KEY");
 const walletConnectProjectId = getEnvVariable("VITE_WALLET_CONNECT_PROJECT_ID");
 const shieldPublishableKey = getEnvVariable("VITE_OPENFORT_SHIELD_PUBLISHABLE_KEY");
+const openfortPolicyId = getEnvVariable("VITE_OPENFORT_POLICY_ID");
 
 const config = createConfig(
     getDefaultConfig({
@@ -17,6 +18,9 @@ const config = createConfig(
         walletConnectProjectId,
         chains: [polygonAmoy],
         ssr: true,
+        transports: {
+            [polygonAmoy.id]: http(),
+        },
     }),
 );
 
@@ -35,6 +39,9 @@ export const Provider = ({ children }: { children: ReactNode }) => {
                         shieldPublishableKey,
                         accountType: AccountTypeEnum.SMART_ACCOUNT,
                         createEncryptedSessionEndpoint: `${backendUrl}/api/shield-session`,
+                        ethereumProviderPolicyId: {
+                            [polygonAmoy.id]: openfortPolicyId,
+                        },
                     }}
                     uiConfig={{
                         authProviders,
