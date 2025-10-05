@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { OpenfortProvider, getDefaultConfig, AuthProvider, RecoveryMethod } from "@openfort/react";
 import { AccountTypeEnum } from "@openfort/openfort-js";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WagmiProvider, createConfig, http } from "wagmi";
+import { WagmiProvider, createConfig /* http */ } from "wagmi";
 import { polygonAmoy } from "viem/chains";
 import { getEnvVariable } from "@/utils";
 
@@ -18,9 +18,9 @@ const config = createConfig(
         walletConnectProjectId,
         chains: [polygonAmoy],
         ssr: true,
-        transports: {
-            [polygonAmoy.id]: http(),
-        },
+        // transports: {
+        //     [polygonAmoy.id]: http(),
+        // },
     }),
 );
 

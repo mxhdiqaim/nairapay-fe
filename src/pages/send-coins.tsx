@@ -31,7 +31,8 @@ const SendCoins = () => {
 
     const onSubmit = (data: FormData) => {
         try {
-            sendTransaction(data.recipient as `0x${string}`, String(data.amount)).then((r) => console.log(r));
+            sendTransaction(data.recipient as `0x${string}`, String(data.amount));
+            notify("Transaction submitted. Awaiting confirmation...", "info");
         } catch (error) {
             console.error("Error preparing transaction:", error);
             notify("An unexpected error occurred.", "error");
