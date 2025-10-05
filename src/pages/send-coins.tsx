@@ -76,7 +76,7 @@ const SendCoins = () => {
                         />
                     )}
                 />
-                <Button type="submit" variant="contained" disabled={isPending || isConfirming} sx={{ mt: 3 }}>
+                <Button type="submit" variant="contained" disabled={isPending || isConfirming} sx={{ mt: 2 }}>
                     {isPending ? "Preparing..." : isConfirming ? "Confirming..." : "Send"}
                 </Button>
             </Box>

@@ -19,6 +19,7 @@
     "@openfort/react": "^0.0.10",
     "@tanstack/react-query": "^5.89.0",
     "@types/node": "^24.5.2",
+    "axios": "^1.12.2",
     "notistack": "^3.0.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

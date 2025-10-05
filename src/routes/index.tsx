@@ -2,7 +2,7 @@ import type { ComponentType, ReactNode } from "react";
 import HomeScreen from "../pages/home.tsx";
 import AuthScreen from "../pages/auth-screen.tsx";
 import NotFoundScreen from "../pages/404.tsx";
-// import TransactionScreen from "@/pages/transaction-screen.tsx";
+import TransactionScreen from "@/pages/transaction-screen.tsx";
 import SendCoins from "@/pages/send-coins.tsx";
 import ReceiveCoins from "@/pages/receive-coins.tsx";
 
@@ -36,12 +36,12 @@ export const appRoutes: AppRouteType[] = [
         element: ReceiveCoins,
         icon: "📥",
     },
-    // {
-    //     to: "/transactions",
-    //     title: "Transactions",
-    //     element: TransactionScreen,
-    //     icon: "💸",
-    // },
+    {
+        to: "/transactions",
+        title: "Transactions",
+        element: TransactionScreen,
+        icon: "💸",
+    },
 
     // Public Routes
     {
