@@ -59,13 +59,10 @@ export const useSendTransaction = () => {
 
 export interface Interaction {
     to: `0x${string}`;
-    value: string; // String representation of a number
+    contract: string;
+    functionName: string;
+    functionArgs: string[];
     data: `0x${string}`;
-    parsed?: {
-        name: string;
-        args: any[];
-        signature: string;
-    } | null;
 }
 
 export interface TransactionIntent {
@@ -77,14 +74,15 @@ export interface TransactionIntent {
 }
 
 const fetchTransactionHistory = async (playerId: string): Promise<TransactionIntent[]> => {
-    const { data } = await axios.get(`${BACKEND_API_URL}/transactions/history/${playerId}`);
+    const { data } = await axios.get(`${BACKEND_API_URL}/api/transactions/history/${playerId}`);
+
     return data;
 };
 
 export const useTransactionHistory = () => {
     const { user } = useUser();
     const { isLoadingWallets } = useWallets();
-    const playerId = user?.player?.id;
+    const playerId = user?.id;
 
     const {
         data: transactions,
