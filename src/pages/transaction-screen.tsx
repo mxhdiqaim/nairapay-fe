@@ -76,51 +76,58 @@ const TransactionScreen = () => {
     return (
         <CustomCard>
             <Typography variant="h6">Transaction History</Typography>
-            <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-                {transactions.map((tx: TransactionIntent) => {
+            <List sx={{ width: "100%" }}>
+                {transactions.map((tx: TransactionIntent, idx: number) => {
                     const details = getTransactionDetails(tx);
-                    console.log("details:", details);
 
-                    if (!details) return null;
+                    if (!details) return;
 
                     const hash = tx.response?.transactionHash;
 
                     return (
-                        <ListItem key={tx.id} disablePadding sx={{ my: 1 }}>
+                        <ListItem key={idx} disablePadding sx={{ mb: 2 }}>
                             <CustomCard variant="outlined" sx={{ width: "100%" }}>
                                 <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
                                     <Typography variant="body2" color="text.secondary">
-                                        Type: **{details.type}**
+                                        <Chip
+                                            label={details.type}
+                                            color={details.type === "Incoming" ? "success" : "error"}
+                                            size="small"
+                                        />
                                     </Typography>
                                     <Chip
                                         label={details.isErc20 ? "NGNC" : "MATIC"}
-                                        size="small"
+                                        size="medium"
                                         color={details.isErc20 ? "primary" : "default"}
                                     />
                                 </Stack>
 
                                 <Typography variant="body1" fontWeight="bold">
-                                    Amount: {details.amount} {details.isErc20 ? "NGNC" : "MATIC"}
+                                    Amount sent {details.amount} {details.isErc20 ? "NGNC" : "MATIC"}
                                 </Typography>
 
                                 <Typography variant="body2" color="text.secondary" noWrap>
-                                    To: {details.recipient}
+                                    Transferred to {details.recipient}
                                 </Typography>
 
-                                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} noWrap>
-                                    Hash:{" "}
+                                <Box>
                                     {hash ? (
                                         <a
                                             href={`https://amoy.polygonscan.com/tx/${hash}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
+                                            style={{ textDecoration: "none", color: "inherit" }}
                                         >
-                                            {hash.slice(0, 10)}...
+                                            <Typography variant="body2" color="primary">
+                                                Transaction Hash {`${hash.slice(0, 6)}...${hash.slice(-4)}`}
+                                            </Typography>
                                         </a>
                                     ) : (
-                                        "N/A"
+                                        <Typography variant="body2" color="text.secondary">
+                                            No Hash
+                                        </Typography>
                                     )}
-                                </Typography>
+                                </Box>
                             </CustomCard>
                         </ListItem>
                     );
