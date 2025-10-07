@@ -10,6 +10,7 @@ const stablecoinAddress = getEnvVariable("VITE_STABLECOIN_ADDRESS") as `0x${stri
 const TransactionScreen = () => {
     const { activeWallet, isLoadingWallets } = useWallets();
     const { transactions, isLoading: isTransactionsLoading, error: transactionsError } = useTransactionHistory();
+    console.log("transactions:", transactions);
 
     const isLoading = isLoadingWallets || isTransactionsLoading;
 
@@ -20,14 +21,14 @@ const TransactionScreen = () => {
         const transferInteraction = tx.interactions?.find(
             (interaction) =>
                 interaction.to?.toLowerCase() === stablecoinAddress.toLowerCase() &&
-                interaction.functionName.startsWith("transfer"), // Use strict equality for function name
+                interaction.functionName.startsWith("transfer"),
         );
 
-        if (!transferInteraction) return;
+        if (!transferInteraction?.functionArgs) return;
 
-        // FIX: Access arguments directly as strings. Remove JSON.parse().
-        const recipient = transferInteraction.functionArgs[0];
-        const value = transferInteraction.functionArgs[1].trim();
+        // Arguments are JSON-encoded strings, so we need to parse them.
+        const recipient = JSON.parse(transferInteraction.functionArgs[0]);
+        const value = JSON.parse(transferInteraction.functionArgs[1].trim());
 
         if (value === "" || !/^\d+$/.test(value)) {
             console.log("value:", value);
@@ -85,21 +86,27 @@ const TransactionScreen = () => {
                     const hash = tx.response?.transactionHash;
 
                     return (
-                        <ListItem disablePadding sx={{ my: 1 }}>
-                            <CustomCard sx={{ width: "100%" }}>
+                        <ListItem key={tx.id} disablePadding sx={{ my: 1 }}>
+                            <CustomCard variant="outlined" sx={{ width: "100%" }}>
                                 <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
                                     <Typography variant="body2" color="text.secondary">
-                                        Type: **type**
+                                        Type: **{details.type}**
                                     </Typography>
-                                    <Chip label={"NGNC"} size="small" color={"primary"} />
+                                    <Chip
+                                        label={details.isErc20 ? "NGNC" : "MATIC"}
+                                        size="small"
+                                        color={details.isErc20 ? "primary" : "default"}
+                                    />
                                 </Stack>
+
                                 <Typography variant="body1" fontWeight="bold">
-                                    {/*Amount: {formatUnits(BigInt(tx.interactions[0].functionArgs[1]), 6)} {"NGNC"}*/}
-                                    Amount: 320 NGNC
+                                    Amount: {details.amount} {details.isErc20 ? "NGNC" : "MATIC"}
                                 </Typography>
+
                                 <Typography variant="body2" color="text.secondary" noWrap>
-                                    To: {tx.interactions[0].functionArgs[0]}
+                                    To: {details.recipient}
                                 </Typography>
+
                                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} noWrap>
                                     Hash:{" "}
                                     {hash ? (
@@ -121,64 +128,6 @@ const TransactionScreen = () => {
             </List>
         </CustomCard>
     );
-
-    // return (
-    //     <CustomCard>
-    //         <Typography variant="h6" sx={{ mb: 1 }}>
-    //             Transaction History
-    //         </Typography>
-    //         <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-    //             {transactions?.map((tx: TransactionIntent) => {
-    //                 const details = getTransactionDetails(tx);
-    //                 if (!details) return null;
-    //
-    //                 const hash = tx.response?.transactionHash;
-    //
-    //                 return (
-    //                     <ListItem key={tx.id} disablePadding sx={{ my: 1 }}>
-    //                         <Card variant="outlined" sx={{ width: "100%" }}>
-    //                             <CardContent>
-    //                                 <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-    //                                     <Typography variant="body2" color="text.secondary">
-    //                                         Type: **{details.type}**
-    //                                     </Typography>
-    //                                     <Chip
-    //                                         label={details.isErc20 ? "NGNC" : "MATIC"}
-    //                                         size="small"
-    //                                         color={details.isErc20 ? "primary" : "default"}
-    //                                     />
-    //                                 </Stack>
-    //
-    //                                 <Typography variant="body1" fontWeight="bold">
-    //                                     Amount: {details.amount} {details.isErc20 ? "NGNC" : "MATIC"}
-    //                                 </Typography>
-    //
-    //                                 <Typography variant="body2" color="text.secondary" noWrap>
-    //                                     To: {details.recipient}
-    //                                 </Typography>
-    //
-    //                                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} noWrap>
-    //                                     Hash:{" "}
-    //                                     {hash ? (
-    //                                         <a
-    //                                             href={`https://amoy.polygonscan.com/tx/${hash}`}
-    //                                             target="_blank"
-    //                                             rel="noopener noreferrer"
-    //                                         >
-    //                                             {hash.slice(0, 10)}...
-    //                                         </a>
-    //                                     ) : (
-    //                                         "N/A"
-    //                                     )}
-    //                                 </Typography>
-    //                             </CardContent>
-    //                         </Card>
-    //                     </ListItem>
-    //                 );
-    //             })}
-    //         </List>
-    //     </CustomCard>
-    // );
 };
 
 export default TransactionScreen;
