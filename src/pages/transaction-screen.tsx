@@ -1,16 +1,16 @@
 import { Alert, Box, CircularProgress, List, ListItem, Typography, Stack, Chip } from "@mui/material";
-import { useTransactionHistory, type TransactionIntent } from "@/hooks/use-transaction.ts";
+import { useTransactionHistory } from "@/hooks/use-transaction.ts";
 import { useWallets } from "@openfort/react";
 import { formatUnits } from "viem";
 import CustomCard from "@/components/ui/custom-card.tsx";
 import { getEnvVariable } from "@/utils";
+import type { TransactionIntent } from "@/types";
 
 const stablecoinAddress = getEnvVariable("VITE_STABLECOIN_ADDRESS") as `0x${string}`;
 
 const TransactionScreen = () => {
     const { activeWallet, isLoadingWallets } = useWallets();
     const { transactions, isLoading: isTransactionsLoading, error: transactionsError } = useTransactionHistory();
-    console.log("transactions:", transactions);
 
     const isLoading = isLoadingWallets || isTransactionsLoading;
 
@@ -39,10 +39,9 @@ const TransactionScreen = () => {
         // Basic validation check
         const type = recipient.toLowerCase() === activeWallet.address.toLowerCase() ? "Incoming" : "Outgoing";
         return {
+            type,
+            recipient,
             isErc20: true,
-            type: type,
-            recipient: recipient,
-            // Convert the string-encoded BigInt value to a formatted string
             amount: formatUnits(BigInt(value), 6),
         };
     };
@@ -62,8 +61,6 @@ const TransactionScreen = () => {
             </CustomCard>
         );
     }
-
-    // const visibleTransactions = transactions?.map(getTransactionDetails).filter(Boolean);
 
     if (!transactions || transactions.length === 0) {
         return (

@@ -7,24 +7,7 @@ import CustomCard from "@/components/ui/custom-card.tsx";
 import { getEnvVariable } from "@/utils";
 import CreateWallet from "@/components/create-wallet.tsx";
 import useNotifier from "@/hooks/use-notifier.ts";
-
-// ABI for a standard ERC-20 token (only the necessary functions)
-const erc20Abi = [
-    {
-        name: "balanceOf",
-        type: "function",
-        stateMutability: "view",
-        inputs: [{ name: "account", type: "address" }],
-        outputs: [{ type: "uint256" }],
-    },
-    {
-        name: "decimals",
-        type: "function",
-        stateMutability: "view",
-        inputs: [],
-        outputs: [{ type: "uint8" }],
-    },
-] as const;
+import { homeErc20Abi } from "@/constant";
 
 // USDC testnet token address on Polygon Amoy
 const stablecoinAddress = getEnvVariable("VITE_STABLECOIN_ADDRESS");
@@ -42,7 +25,7 @@ const HomeScreen = () => {
         error: balanceError,
     } = useReadContract({
         address: stablecoinAddress,
-        abi: erc20Abi,
+        abi: homeErc20Abi,
         functionName: "balanceOf",
         args: [activeWallet?.address as `0x${string}`],
         query: {

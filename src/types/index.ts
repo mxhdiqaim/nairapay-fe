@@ -21,3 +21,19 @@ export const createWalletSchema = yup.object().shape({
 
 export type FormData = yup.InferType<typeof validationSchema>;
 export type CreateWalletFormData = yup.InferType<typeof createWalletSchema>;
+
+export interface Interaction {
+    to: `0x${string}`;
+    contract: string;
+    functionName: string;
+    functionArgs: string[];
+    data: `0x${string}`;
+}
+
+export interface TransactionIntent {
+    id: string;
+    interactions: Interaction[];
+    response?: {
+        transactionHash: string;
+    };
+}

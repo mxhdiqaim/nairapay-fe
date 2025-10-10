@@ -2,25 +2,13 @@ import { useCallback } from "react";
 import { parseUnits } from "viem";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { getEnvVariable } from "@/utils";
-import axios from "axios";
 import { useUser, useWallets } from "@openfort/react";
 import { useQuery } from "@tanstack/react-query";
+import { erc20Abi } from "@/constant";
+import type { TransactionIntent } from "@/types";
 
 const stablecoinAddress = getEnvVariable("VITE_STABLECOIN_ADDRESS") as `0x${string}`;
 const BACKEND_API_URL = getEnvVariable("VITE_BACKEND_URL");
-
-const erc20Abi = [
-    {
-        name: "transfer",
-        type: "function",
-        stateMutability: "nonpayable",
-        inputs: [
-            { name: "to", type: "address" },
-            { name: "value", type: "uint256" },
-        ],
-        outputs: [{ type: "bool" }],
-    },
-] as const;
 
 export const useSendTransaction = () => {
     const { address } = useAccount();
@@ -57,26 +45,14 @@ export const useSendTransaction = () => {
     };
 };
 
-export interface Interaction {
-    to: `0x${string}`;
-    contract: string;
-    functionName: string;
-    functionArgs: string[];
-    data: `0x${string}`;
-}
-
-export interface TransactionIntent {
-    id: string;
-    interactions: Interaction[];
-    response?: {
-        transactionHash: string;
-    };
-}
-
 const fetchTransactionHistory = async (playerId: string): Promise<TransactionIntent[]> => {
-    const { data } = await axios.get(`${BACKEND_API_URL}/api/transactions/history/${playerId}`);
+    const response = await fetch(`${BACKEND_API_URL}/api/transactions/history/${playerId}`);
 
-    return data;
+    if (!response.ok) {
+        throw new Error("Failed to fetch transaction history");
+    }
+
+    return response.json();
 };
 
 export const useTransactionHistory = () => {
