@@ -64,6 +64,17 @@ After installing the dependencies, you'll need to set up your environment variab
 
     VITE_BACKEND_URL=http://localhost:8080
     ```
+---
+### 💧 Getting Test Coins (Faucet)
+
+The application runs on the **Polygon Amoy Testnet**. You need two types of funds to test transactions: test MATIC for gas, and your stablecoin (NGNC) for transfers.
+
+1.  **Get Test coin**:
+    * Get your wallet address from the app.
+    * Visit [https://faucet.circle.com/](https://faucet.circle.com/)
+    * Select **Polygon PoS Amoy** Network.
+    * Enter your address and request USDC.
+---
 
 ### Running the Application
 
