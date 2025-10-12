@@ -23,7 +23,6 @@ const GuardedRoute = memo(({ children, authGuard }: Props) => {
             if (!authGuard) return; // Don't check for public routes
 
             try {
-                // Assuming the root URL returns a successful response if the server is up
                 const response = await fetch(backendUrl);
                 if (!response.ok) {
                     setIsBackendDown(true);
