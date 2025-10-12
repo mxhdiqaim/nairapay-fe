@@ -67,12 +67,6 @@ const SideBar: FC<Props> = ({ sx, drawerState, toggleDrawer, showDrawer }) => {
                 if (route.hidden || !(route.authGuard ?? true) || !(route.useLayout ?? true)) {
                     return false;
                 }
-                // // Role-based filtering
-                // if (route.roles && currentUser) {
-                //     // return route.roles.includes("manager");
-                //     return route.roles.includes(currentUser.role);
-                // }
-                // // If no roles are specified, show to all authenticated users
                 return true;
             })
             .map((route) => {
