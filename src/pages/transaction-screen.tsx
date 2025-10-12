@@ -1,9 +1,10 @@
-import { Alert, Box, CircularProgress, List, ListItem, Typography, Stack, Chip } from "@mui/material";
+import { Alert, Box, List, ListItem, Typography, Stack, Chip } from "@mui/material";
 import { useTransactionHistory } from "@/hooks/use-transaction.ts";
 import { useWallets } from "@openfort/react";
 import CustomCard from "@/components/ui/custom-card.tsx";
 import type { TransactionIntent } from "@/types";
 import { getTransactionDetails } from "@/helpers";
+import TransactionSkeleton from "@/components/skeletons/transaction-skelekon.tsx";
 
 const TransactionScreen = () => {
     const { activeWallet, isLoadingWallets } = useWallets();
@@ -12,11 +13,7 @@ const TransactionScreen = () => {
     const isLoading = isLoadingWallets || isTransactionsLoading;
 
     if (isLoading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-                <CircularProgress />
-            </Box>
-        );
+        return <TransactionSkeleton />;
     }
 
     if (transactionsError) {
@@ -42,7 +39,7 @@ const TransactionScreen = () => {
                 {transactions.map((tx: TransactionIntent, idx: number) => {
                     const details = getTransactionDetails(tx, activeWallet);
 
-                    if (!details) return;
+                    if (!details) return null;
 
                     const hash = tx.response?.transactionHash;
 

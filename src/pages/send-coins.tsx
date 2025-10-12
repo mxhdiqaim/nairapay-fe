@@ -1,13 +1,17 @@
 import { Box, TextField, Button, Typography, Alert } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useStatus, useWallets } from "@openfort/react";
 import CustomCard from "@/components/ui/custom-card.tsx";
 import useNotifier from "@/hooks/use-notifier.ts";
 import { validationSchema, type FormData } from "@/types";
 import { useSendTransaction } from "@/hooks/use-transaction.ts";
+import SendCoinsSkeleton from "@/components/skeletons/sendcoin-skeleton.tsx";
 
 const SendCoins = () => {
     const notify = useNotifier();
+    const { isLoading: isAuthLoading } = useStatus();
+    const { isLoadingWallets } = useWallets();
     const {
         sendTransaction,
         hash: transactionHash,
@@ -33,11 +37,15 @@ const SendCoins = () => {
         try {
             sendTransaction(data.recipient as `0x${string}`, String(data.amount));
             notify("Transaction submitted. Awaiting confirmation...", "info");
-        } catch (error) {
-            console.error("Error preparing transaction:", error);
+        } catch (err) {
+            console.error("Error preparing transaction:", err);
             notify("An unexpected error occurred.", "error");
         }
     };
+
+    if (isAuthLoading || isLoadingWallets) {
+        return <SendCoinsSkeleton />;
+    }
 
     return (
         <CustomCard>

@@ -1,7 +1,7 @@
 import { memo, type ReactNode, useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useStatus } from "@openfort/react";
-import Spinner from "@/components/ui/spinner.tsx";
+import Spinner from "@/components/skeletons/spinner.tsx";
 import { getEnvVariable } from "@/utils";
 import ServerDown from "@/pages/feedbacks/server-down.tsx";
 

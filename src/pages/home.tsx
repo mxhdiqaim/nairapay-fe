@@ -8,6 +8,7 @@ import { getEnvVariable } from "@/utils";
 import CreateWallet from "@/components/create-wallet.tsx";
 import useNotifier from "@/hooks/use-notifier.ts";
 import { homeErc20Abi } from "@/constant";
+import HomeSkeleton from "@/components/skeletons/home-skeleton.tsx";
 
 // USDC testnet token address on Polygon Amoy
 const stablecoinAddress = getEnvVariable("VITE_STABLECOIN_ADDRESS");
@@ -78,11 +79,7 @@ const HomeScreen = () => {
 
     // If we have wallets but no active wallet, this might be a temporary state
     if (!activeWallet) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-                <CircularProgress />
-            </Box>
-        );
+        return <HomeSkeleton />;
     }
 
     return (

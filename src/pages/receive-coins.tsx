@@ -1,10 +1,11 @@
 import { useState } from "react";
 import QRCode from "react-qr-code";
 import { useWallets } from "@openfort/react";
-import { Box, Typography, Button, Stack, Alert, CircularProgress } from "@mui/material";
+import { Box, Typography, Button, Stack, Alert } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CustomCard from "@/components/ui/custom-card.tsx";
 import useScreenSize from "@/hooks/use-screen-size.ts";
+import ReceiveCoinsSkeleton from "@/components/skeletons/recieve-coin-skeleton.tsx";
 
 const ReceiveCoins = () => {
     const { activeWallet, isLoadingWallets } = useWallets();
@@ -26,11 +27,7 @@ const ReceiveCoins = () => {
     };
 
     if (isLoadingWallets) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
-                <CircularProgress />
-            </Box>
-        );
+        return <ReceiveCoinsSkeleton />;
     }
 
     if (!activeWallet) {
