@@ -6,7 +6,6 @@ import { WagmiProvider, createConfig } from "wagmi";
 import { polygonAmoy } from "viem/chains";
 import { getEnvVariable } from "@/utils";
 
-const backendUrl = getEnvVariable("VITE_BACKEND_URL");
 const publishableKey = getEnvVariable("VITE_OPENFORT_PUBLISHABLE_KEY");
 const walletConnectProjectId = getEnvVariable("VITE_WALLET_CONNECT_PROJECT_ID");
 const shieldPublishableKey = getEnvVariable("VITE_OPENFORT_SHIELD_PUBLISHABLE_KEY");
@@ -21,10 +20,11 @@ const config = createConfig(
     }),
 );
 
-const allowedMethods = [RecoveryMethod.PASSWORD, RecoveryMethod.AUTOMATIC, RecoveryMethod.PASSKEY];
-const authProviders = [AuthProvider.GUEST, AuthProvider.EMAIL /* AuthProvider.GOOGLE, AuthProvider.WALLET*/];
-
 const queryClient = new QueryClient();
+
+const authProviders: AuthProvider[] = [AuthProvider.GUEST, AuthProvider.EMAIL];
+
+const allowedMethods = [RecoveryMethod.PASSWORD, RecoveryMethod.AUTOMATIC, RecoveryMethod.PASSKEY];
 
 export const Provider = ({ children }: { children: ReactNode }) => {
     return (
@@ -35,18 +35,13 @@ export const Provider = ({ children }: { children: ReactNode }) => {
                     walletConfig={{
                         shieldPublishableKey,
                         accountType: AccountTypeEnum.SMART_ACCOUNT,
-                        createEncryptedSessionEndpoint: `${backendUrl}/api/shield-session`,
                         ethereumProviderPolicyId: {
                             [polygonAmoy.id]: openfortPolicyId,
                         },
                     }}
                     uiConfig={{
                         authProviders,
-                        theme: "midnight",
-                        customTheme: {
-                            "--ck-font-family": "monospace",
-                            "--ck-color-background": "#ccc",
-                        },
+                        theme: "auto",
                         walletRecovery: {
                             allowedMethods,
                             defaultMethod: RecoveryMethod.PASSWORD,

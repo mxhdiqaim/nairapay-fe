@@ -1,50 +1,15 @@
 import { Alert, Box, CircularProgress, List, ListItem, Typography, Stack, Chip } from "@mui/material";
 import { useTransactionHistory } from "@/hooks/use-transaction.ts";
 import { useWallets } from "@openfort/react";
-import { formatUnits } from "viem";
 import CustomCard from "@/components/ui/custom-card.tsx";
-import { getEnvVariable } from "@/utils";
 import type { TransactionIntent } from "@/types";
-
-const stablecoinAddress = getEnvVariable("VITE_STABLECOIN_ADDRESS") as `0x${string}`;
+import { getTransactionDetails } from "@/helpers";
 
 const TransactionScreen = () => {
     const { activeWallet, isLoadingWallets } = useWallets();
     const { transactions, isLoading: isTransactionsLoading, error: transactionsError } = useTransactionHistory();
 
     const isLoading = isLoadingWallets || isTransactionsLoading;
-
-    const getTransactionDetails = (tx: TransactionIntent) => {
-        if (!activeWallet) return null; // Ensure activeWallet is available
-
-        // Find an ERC20 transfer interaction
-        const transferInteraction = tx.interactions?.find(
-            (interaction) =>
-                interaction.to?.toLowerCase() === stablecoinAddress.toLowerCase() &&
-                interaction.functionName.startsWith("transfer"),
-        );
-
-        if (!transferInteraction?.functionArgs) return;
-
-        // Arguments are JSON-encoded strings, so we need to parse them.
-        const recipient = JSON.parse(transferInteraction.functionArgs[0]);
-        const value = JSON.parse(transferInteraction.functionArgs[1].trim());
-
-        if (value === "" || !/^\d+$/.test(value)) {
-            console.log("value:", value);
-            // If the value is empty or contains non-digit characters, treat it as 0
-            return null;
-        }
-
-        // Basic validation check
-        const type = recipient.toLowerCase() === activeWallet.address.toLowerCase() ? "Incoming" : "Outgoing";
-        return {
-            type,
-            recipient,
-            isErc20: true,
-            amount: formatUnits(BigInt(value), 6),
-        };
-    };
 
     if (isLoading) {
         return (
@@ -75,7 +40,7 @@ const TransactionScreen = () => {
             <Typography variant="h6">Transaction History</Typography>
             <List sx={{ width: "100%" }}>
                 {transactions.map((tx: TransactionIntent, idx: number) => {
-                    const details = getTransactionDetails(tx);
+                    const details = getTransactionDetails(tx, activeWallet);
 
                     if (!details) return;
 

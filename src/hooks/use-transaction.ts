@@ -24,7 +24,6 @@ export const useSendTransaction = () => {
 
             const amountInWei = parseUnits(amount, 6);
 
-            // Use the `writeContract` function here
             writeContract({
                 address: stablecoinAddress,
                 abi: erc20Abi,
@@ -59,6 +58,8 @@ export const useTransactionHistory = () => {
     const { user } = useUser();
     const { isLoadingWallets } = useWallets();
     const playerId = user?.id;
+
+    console.log("Fetching transactions for playerId:", playerId);
 
     const {
         data: transactions,

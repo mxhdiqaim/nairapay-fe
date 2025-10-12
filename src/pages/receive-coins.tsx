@@ -1,15 +1,15 @@
 import { useState } from "react";
 import QRCode from "react-qr-code";
 import { useWallets } from "@openfort/react";
-import { Box, Typography, Button, Stack, Alert, CircularProgress, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Typography, Button, Stack, Alert, CircularProgress } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CustomCard from "@/components/ui/custom-card.tsx";
+import useScreenSize from "@/hooks/use-screen-size.ts";
 
 const ReceiveCoins = () => {
     const { activeWallet, isLoadingWallets } = useWallets();
     const [isCopied, setIsCopied] = useState(false);
-    const theme = useTheme();
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const screenSize = useScreenSize();
 
     const handleCopy = async () => {
         if (!activeWallet?.address) {
@@ -49,7 +49,9 @@ const ReceiveCoins = () => {
                 </Typography>
 
                 <Box sx={{ p: 2, border: "1px solid #e0e0e0", borderRadius: "8px", bgcolor: "white" }}>
-                    {activeWallet.address && <QRCode value={activeWallet.address} size={isSmallScreen ? 180 : 256} />}
+                    {activeWallet.address && (
+                        <QRCode value={activeWallet.address} size={screenSize === "mobile" ? 180 : 256} />
+                    )}
                 </Box>
 
                 <Stack direction="row" spacing={1} alignItems="center">
